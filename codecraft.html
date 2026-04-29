@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CodeCraft Academy</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg: #0A0E1A;
+      --surface: #111827;
+      --surface2: #1A2236;
+      --cyan: #00E5FF;
+      --green: #39FF14;
+      --muted: #64748B;
+      --text: #E2E8F0;
+      --border: rgba(0, 229, 255, 0.15);
+      --radius: 12px;
+      --trans: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Sora", system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif;
+      scrollbar-color: var(--cyan) var(--surface);
+      scrollbar-width: thin;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      color: var(--text);
+    }
+
+    body {
+      line-height: 1.6;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      border-bottom: 1px solid transparent;
+      transition: background var(--trans), border-color var(--trans), backdrop-filter var(--trans), box-shadow var(--trans);
+    }
+
+    .site-header.scrolled {
+      background: rgba(10, 14, 26, 0.78);
+      border-color: var(--border);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    }
+
+    .nav-shell {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .logo {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .blink {
+      color: var(--cyan);
+      animation: blink 1s steps(1, end) infinite;
+    }
+
+    @keyframes blink {
+      0%, 49% { opacity: 1; }
+      50%, 100% { opacity: 0; }
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      list-style: none;
+      align-items: center;
+    }
+
+    .nav-link {
+      position: relative;
+      color: var(--muted);
+      font-size: 0.95rem;
+      transition: color var(--trans);
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+      color: var(--text);
+    }
+
+    .nav-link::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -0.35rem;
+      width: 100%;
+      height: 2px;
+      background: var(--cyan);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform var(--trans);
+    }
+
+    .nav-link.active::after,
+    .nav-link:hover::after {
+      transform: scaleX(1);
+    }
+
+    .nav-cta {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      padding: 0.55rem 1rem;
+      font-weight: 500;
+      transition: transform var(--trans), background var(--trans), color var(--trans), border-color var(--trans);
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-ghost {
+      border-color: var(--border);
+      color: var(--text);
+      background: transparent;
+    }
+
+    .btn-ghost:hover {
+      background: rgba(0, 229, 255, 0.08);
+    }
+
+    .btn-fill {
+      background: var(--cyan);
+      border-color: var(--cyan);
+      color: #001018;
+    }
+
+    .btn-fill:hover {
+      background: #4df0ff;
+      border-color: #4df0ff;
+    }
+
+    .menu-toggle {
+      display: none;
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text);
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .menu-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 14, 26, 0.97);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+    }
+
+    .menu-overlay.open {
+      display: flex;
+    }
+
+    .menu-panel {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.4rem;
+    }
+
+    .menu-panel .nav-link {
+      font-size: 1.15rem;
+    }
+
+    .menu-actions {
+      margin-top: 0.75rem;
+      display: flex;
+      gap: 0.75rem;
+    }
+
+
+    .reading-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      width: 0%;
+      background: var(--cyan);
+      box-shadow: 0 0 14px var(--cyan);
+      z-index: 1200;
+      transition: width 0.12s linear;
+    }
+
+    .hero {
+      position: relative;
+      min-height: calc(100vh - 84px);
+      display: grid;
+      place-items: center;
+      padding: 5.5rem 1.5rem 4rem;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(0,229,255,0.24) 1px, transparent 1.2px);
+      background-size: 22px 22px;
+      opacity: 0.45;
+      animation: drift 18s linear infinite;
+      z-index: -2;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 70% 20%, rgba(0,229,255,0.16), transparent 45%),
+                  linear-gradient(180deg, rgba(10,14,26,0.38), var(--bg) 72%);
+      z-index: -1;
+    }
+
+    @keyframes drift {
+      0% { transform: translate3d(0,0,0); }
+      100% { transform: translate3d(22px,22px,0); }
+    }
+
+    .hero-inner {
+      width: min(900px, 100%);
+      text-align: center;
+    }
+
+    .hero-title {
+      font-size: clamp(2rem, 4.8vw, 4rem);
+      line-height: 1.12;
+      margin-bottom: 1rem;
+    }
+
+    .typewriter {
+      color: var(--cyan);
+    }
+
+    .typewriter::after {
+      content: "|";
+      margin-left: 0.25rem;
+      color: var(--cyan);
+      animation: blink 1s steps(1, end) infinite;
+    }
+
+    .hero-sub {
+      max-width: 760px;
+      margin: 0 auto;
+      color: var(--text);
+      opacity: 0.9;
+    }
+
+    .hero-actions {
+      margin-top: 2rem;
+      display: flex;
+      justify-content: center;
+      gap: 0.85rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-glow {
+      background: var(--cyan);
+      color: #001018;
+      box-shadow: 0 0 0 rgba(0,229,255,0), 0 0 24px rgba(0,229,255,0.35);
+    }
+
+    .btn-glow:hover {
+      box-shadow: 0 0 0 rgba(0,229,255,0), 0 0 28px rgba(0,229,255,0.6);
+      background: #4df0ff;
+    }
+
+    .stats-bar {
+      margin: 2rem auto 0;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(130px, 1fr));
+      gap: 0.75rem;
+      width: min(860px, 100%);
+    }
+
+    .stat {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.75rem;
+      background: rgba(17,24,39,0.66);
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.92rem;
+    }
+
+    .enroll-toast {
+      position: fixed;
+      left: 1.25rem;
+      bottom: 1.25rem;
+      z-index: 1100;
+      background: var(--surface2);
+      border: 1px solid rgba(57,255,20,0.35);
+      border-radius: var(--radius);
+      padding: 0.75rem 0.9rem;
+      display: none;
+      align-items: center;
+      gap: 0.65rem;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+    }
+
+    .enroll-toast.show { display: inline-flex; }
+
+    .pulse-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--green);
+      box-shadow: 0 0 0 rgba(57,255,20,0.6);
+      animation: pulse 1.8s infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(57,255,20,0.55); }
+      70% { box-shadow: 0 0 0 10px rgba(57,255,20,0); }
+      100% { box-shadow: 0 0 0 0 rgba(57,255,20,0); }
+    }
+
+
+
+    .trust-bar {
+      background: #0D1220;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 0.85rem 0;
+      overflow: hidden;
+    }
+
+    .trust-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      align-items: center;
+      gap: 1.25rem;
+    }
+
+    .trust-label {
+      color: var(--muted);
+      white-space: nowrap;
+      font-size: 0.9rem;
+    }
+
+    .marquee {
+      overflow: hidden;
+      mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+      -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+    }
+
+    .marquee-track {
+      width: max-content;
+      display: flex;
+      gap: 2rem;
+      animation: marquee 28s linear infinite;
+      font-family: "JetBrains Mono", monospace;
+      color: var(--muted);
+      font-size: 0.88rem;
+      letter-spacing: 0.01em;
+    }
+
+    .marquee-group {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+      white-space: nowrap;
+    }
+
+    .marquee-item::after {
+      content: "•";
+      color: rgba(100,116,139,0.6);
+      margin-left: 2rem;
+    }
+
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    .learn-section,
+    .path-section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 4rem 1.5rem;
+    }
+
+    .section-title {
+      font-size: clamp(1.6rem, 3vw, 2.5rem);
+      margin-bottom: 0.75rem;
+    }
+
+    .section-sub {
+      color: var(--muted);
+      max-width: 740px;
+      margin-bottom: 2rem;
+    }
+
+    .learn-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .learn-card {
+      background: rgba(17,24,39,0.72);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--cyan);
+      border-radius: var(--radius);
+      padding: 1.15rem 1.15rem 1.15rem 1rem;
+      transition: transform var(--trans), box-shadow var(--trans), border-color var(--trans);
+    }
+
+    .learn-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 0 0 rgba(0,229,255,0), 0 8px 28px rgba(0,229,255,0.25);
+      border-color: rgba(0,229,255,0.38);
+    }
+
+    .learn-icon {
+      font-size: 1.2rem;
+      margin-bottom: 0.4rem;
+      line-height: 1;
+    }
+
+    .learn-card h3 { font-size: 1rem; margin-bottom: 0.45rem; font-weight: 700; }
+    .learn-card p { color: var(--text); opacity: 0.85; font-size: 0.93rem; }
+
+    .path-section {
+      position: relative;
+      padding-top: 4.5rem;
+      padding-bottom: 4.5rem;
+    }
+
+    .skill-tree {
+      position: relative;
+      max-width: 980px;
+      margin: 2.25rem auto 0;
+      padding: 0.5rem 0;
+    }
+
+    .skill-tree::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(180deg, rgba(34,197,94,0.7), rgba(239,68,68,0.7));
+      transform: translateX(-50%);
+    }
+
+    .tree-node {
+      position: relative;
+      width: 50%;
+      padding: 0.6rem 1.5rem;
+      margin: 0.2rem 0;
+    }
+
+    .tree-node.left {
+      margin-left: 0;
+      text-align: right;
+    }
+
+    .tree-node.right {
+      margin-left: 50%;
+      text-align: left;
+    }
+
+    .tree-card {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.9rem;
+      min-width: min(420px, 100%);
+      max-width: 420px;
+      background: rgba(17,24,39,0.78);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.85rem 1rem;
+    }
+
+    .tree-node.left .tree-card { margin-left: auto; }
+
+    .node-dot {
+      position: absolute;
+      top: 50%;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      transform: translateY(-50%);
+      border: 2px solid rgba(255,255,255,0.35);
+      display: grid;
+      place-items: center;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: #fff;
+      z-index: 2;
+    }
+
+    .tree-node.left .node-dot { right: -11px; }
+    .tree-node.right .node-dot { left: -11px; }
+
+    .level-circle {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .level-meta h3 { font-size: 0.98rem; margin-bottom: 0.2rem; }
+    .level-meta p { font-size: 0.84rem; color: var(--muted); }
+
+    .level-1 { background: #22C55E; }
+    .level-2 { background: #EAB308; }
+    .level-3 { background: #F97316; }
+    .level-4 { background: #3B82F6; }
+    .level-5 { background: #A855F7; }
+    .level-6 { background: #EF4444; }
+
+    .node-active .level-circle,
+    .node-active .node-dot {
+      box-shadow: 0 0 0 rgba(34,197,94,0.55);
+      animation: levelPulse 1.8s infinite;
+    }
+
+    @keyframes levelPulse {
+      0% { box-shadow: 0 0 0 0 rgba(34,197,94,0.45); }
+      75% { box-shadow: 0 0 0 12px rgba(34,197,94,0); }
+      100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); }
+    }
+
+    .node-locked .tree-card,
+    .node-locked .level-circle,
+    .node-locked .node-dot {
+      opacity: 0.45;
+      filter: grayscale(1);
+    }
+
+    .tree-card[data-lock]::after {
+      content: attr(data-lock);
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 10px);
+      transform: translateX(-50%) translateY(6px);
+      white-space: nowrap;
+      background: #0D1220;
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 0.76rem;
+      padding: 0.35rem 0.5rem;
+      border-radius: 8px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--trans), transform var(--trans);
+    }
+
+    .node-locked .tree-card:hover::after {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .fade-card {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+
+    .fade-card.in-view {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 960px) {
+      .nav-links,
+      .nav-cta {
+        display: none;
+      }
+
+      .menu-toggle {
+        display: inline-flex;
+      }
+
+      .stats-bar {
+        grid-template-columns: repeat(2, minmax(130px, 1fr));
+      }
+
+      .trust-inner {
+        grid-template-columns: 1fr;
+        gap: 0.6rem;
+      }
+
+      .learn-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .tree-node,
+      .tree-node.right {
+        width: 100%;
+        margin-left: 0;
+        text-align: left;
+        padding-left: 2.2rem;
+      }
+
+      .skill-tree::before {
+        left: 20px;
+      }
+
+      .tree-node.left .node-dot,
+      .tree-node.right .node-dot {
+        left: 9px;
+        right: auto;
+      }
+
+      .tree-node.left .tree-card {
+        margin-left: 0;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .stats-bar {
+        grid-template-columns: 1fr;
+      }
+
+      .learn-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+
+
+    .curriculum-section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 4rem 1.5rem 5rem;
+    }
+
+    .curriculum-top {
+      margin: 1.5rem 0 1.2rem;
+    }
+
+    .curriculum-counter {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.95rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .curriculum-progress {
+      height: 6px;
+      width: 100%;
+      background: rgba(100,116,139,0.25);
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .curriculum-progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--cyan), #22c55e);
+      transition: width var(--trans);
+    }
+
+    .accordion-item { border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 0.85rem; background: rgba(17,24,39,0.65); overflow: hidden; }
+    .accordion-header { width: 100%; background: transparent; color: var(--text); border: 0; padding: 0.95rem 1rem; display:flex; align-items:center; justify-content:space-between; gap:1rem; cursor:pointer; }
+    .acc-left { display:flex; align-items:center; gap:0.7rem; flex-wrap:wrap; }
+    .lvl-badge { font-family:"JetBrains Mono", monospace; font-size:0.75rem; padding:0.22rem 0.5rem; border-radius:999px; color:#fff; }
+    .acc-meta { color: var(--muted); font-size:0.84rem; display:flex; gap:0.7rem; align-items:center; }
+    .acc-chevron { transition: transform var(--trans); color: var(--cyan); }
+    .accordion-item.open .acc-chevron { transform: rotate(180deg); }
+    .accordion-body { max-height: 0; overflow: hidden; transition: max-height .35s ease; }
+    .lesson-list { padding: 0 1rem 1rem; display:grid; gap:0.55rem; }
+    .lesson-row { display:grid; grid-template-columns:auto 1fr auto auto; gap:0.6rem; align-items:center; border:1px solid rgba(100,116,139,0.25); border-radius:10px; padding:0.55rem 0.65rem; background: rgba(10,14,26,0.5); }
+    .lesson-row input { accent-color: var(--cyan); width:16px; height:16px; }
+    .lesson-title { font-size:0.92rem; }
+    .duration-badge,.project-badge,.preview-pill { font-size:0.72rem; border-radius:999px; padding:0.2rem 0.45rem; font-family:"JetBrains Mono", monospace; }
+    .duration-badge { border:1px solid var(--border); color:var(--muted); }
+    .preview-pill { background: rgba(34,197,94,0.2); border:1px solid rgba(34,197,94,0.4); color:#86efac; }
+    .lesson-row.project { background: rgba(234,179,8,0.12); border-color: rgba(234,179,8,0.45); }
+    .project-badge { background: rgba(234,179,8,0.2); border:1px solid rgba(234,179,8,0.5); color:#facc15; }
+
+    ::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--surface);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, var(--cyan), #00b8cc);
+      border-radius: 999px;
+      border: 2px solid var(--surface);
+      transition: background var(--trans);
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(180deg, #4df0ff, var(--cyan));
+    }
+  </style>
+</head>
+<body>
+  <div class="reading-progress" id="readingProgress" aria-hidden="true"></div>
+
+  <header class="site-header" id="siteHeader">
+    <nav class="nav-shell" aria-label="Main navigation">
+      <a class="logo" href="#">CodeCraft<span class="blink">_</span></a>
+
+      <ul class="nav-links">
+        <li><a class="nav-link active" href="#">Home</a></li>
+        <li><a class="nav-link" href="#">Courses</a></li>
+        <li><a class="nav-link" href="#">Curriculum</a></li>
+        <li><a class="nav-link" href="#">Instructors</a></li>
+        <li><a class="nav-link" href="#">Pricing</a></li>
+        <li><a class="nav-link" href="#">Blog</a></li>
+      </ul>
+
+      <div class="nav-cta">
+        <a class="btn btn-ghost" href="#">Log In</a>
+        <a class="btn btn-fill" href="#">Enroll Free</a>
+      </div>
+
+      <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+        ☰
+      </button>
+    </nav>
+  </header>
+
+  <div class="menu-overlay" id="mobileMenu" aria-hidden="true">
+    <div class="menu-panel">
+      <a class="nav-link active" href="#">Home</a>
+      <a class="nav-link" href="#">Courses</a>
+      <a class="nav-link" href="#">Curriculum</a>
+      <a class="nav-link" href="#">Instructors</a>
+      <a class="nav-link" href="#">Pricing</a>
+      <a class="nav-link" href="#">Blog</a>
+      <div class="menu-actions">
+        <a class="btn btn-ghost" href="#">Log In</a>
+        <a class="btn btn-fill" href="#">Enroll Free</a>
+      </div>
+    </div>
+  </div>
+
+
+  <main>
+    <section class="hero" id="home">
+      <div class="hero-inner">
+        <h1 class="hero-title"> <span class="typewriter" id="typewriterText">Learn to Code.</span> </h1>
+        <p class="hero-sub">A structured, project-based CS curriculum — from how computers work to building full-stack apps. For absolute beginners to aspiring engineers.</p>
+
+        <div class="hero-actions">
+          <a class="btn btn-glow" href="#">Start for Free →</a>
+          <a class="btn btn-ghost" href="#">Watch Intro ▶</a>
+        </div>
+
+        <div class="stats-bar" aria-label="CodeCraft stats">
+          <div class="stat">42,000+ Students</div>
+          <div class="stat">180+ Lessons</div>
+          <div class="stat">6 Skill Levels</div>
+          <div class="stat">4.9★ Rating</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <button class="enroll-toast" id="enrollToast" type="button" aria-label="Dismiss recent enrollment notification">
+    <span class="pulse-dot" aria-hidden="true"></span>
+    <span>Arjun S. just enrolled in Python Basics</span>
+  </button>
+
+
+  <section class="trust-bar" aria-label="Graduate employers">
+    <div class="trust-inner">
+      <p class="trust-label">Our graduates work at:</p>
+      <div class="marquee">
+        <div class="marquee-track">
+          <ul class="marquee-group" aria-hidden="true">
+            <li class="marquee-item">Google</li><li class="marquee-item">Meta</li><li class="marquee-item">Amazon</li><li class="marquee-item">Stripe</li><li class="marquee-item">GitHub</li><li class="marquee-item">Shopify</li><li class="marquee-item">Netflix</li><li class="marquee-item">Cloudflare</li><li class="marquee-item">Vercel</li><li class="marquee-item">OpenAI</li><li class="marquee-item">Microsoft</li><li class="marquee-item">Notion</li><li class="marquee-item">Linear</li><li class="marquee-item">Figma</li>
+          </ul>
+          <ul class="marquee-group" aria-hidden="true">
+            <li class="marquee-item">Google</li><li class="marquee-item">Meta</li><li class="marquee-item">Amazon</li><li class="marquee-item">Stripe</li><li class="marquee-item">GitHub</li><li class="marquee-item">Shopify</li><li class="marquee-item">Netflix</li><li class="marquee-item">Cloudflare</li><li class="marquee-item">Vercel</li><li class="marquee-item">OpenAI</li><li class="marquee-item">Microsoft</li><li class="marquee-item">Notion</li><li class="marquee-item">Linear</li><li class="marquee-item">Figma</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="learn-section" id="curriculum">
+    <p class="trust-label">OUTCOMES</p>
+    <h2 class="section-title">From zero to engineer — seriously.</h2>
+    <p class="section-sub">Six focused skill areas that take you from never opening a terminal to shipping real applications.</p>
+    <div class="learn-grid">
+      <article class="learn-card fade-card"><div class="learn-icon" aria-hidden="true">💻</div><h3>How Computers Work</h3><p>Understand the CPU, RAM, storage, operating systems, and the internet at a deep level. No more magic — just clear mental models.</p></article>
+      <article class="learn-card fade-card"><div class="learn-icon" aria-hidden="true">🧠</div><h3>Programming Fundamentals</h3><p>Master variables, loops, functions, and logic in Python. Learn to think algorithmically before touching any framework.</p></article>
+      <article class="learn-card fade-card"><div class="learn-icon" aria-hidden="true">🔢</div><h3>Data Structures &amp; Algorithms</h3><p>Arrays, hash maps, trees, sorting, searching, and Big-O notation. The foundation of every technical interview and real system.</p></article>
+      <article class="learn-card fade-card"><div class="learn-icon" aria-hidden="true">🌐</div><h3>Web Development</h3><p>Build real websites with HTML, CSS, JavaScript, and React. Responsive design, DOM manipulation, and modern component patterns.</p></article>
+      <article class="learn-card fade-card"><div class="learn-icon" aria-hidden="true">⚙️</div><h3>Backend &amp; Databases</h3><p>Create REST APIs with Node.js and Express. Store and query data with PostgreSQL and MongoDB. Handle auth, security, and deployment.</p></article>
+      <article class="learn-card fade-card"><div class="learn-icon" aria-hidden="true">🚀</div><h3>Career &amp; Real Projects</h3><p>Git, GitHub, deployment, system design, and interview prep. Build a portfolio that gets you hired.</p></article>
+    </div>
+  </section>
+
+  <section class="path-section" id="learning-path">
+    <h2 class="section-title">Your Learning Path</h2>
+    <p class="section-sub">Unlock each level as you complete the previous one.</p>
+    <div class="skill-tree" aria-label="Vertical learning path skill tree">
+      <article class="tree-node left node-active fade-card">
+        <span class="node-dot level-1">1</span>
+        <div class="tree-card">
+          <div class="level-circle level-1">L1</div>
+          <div class="level-meta"><h3>The Foundations</h3><p>Start here</p></div>
+        </div>
+      </article>
+      <article class="tree-node right node-locked fade-card">
+        <span class="node-dot level-2">2</span>
+        <div class="tree-card" data-lock="Complete Level 1 to unlock">
+          <div class="level-circle level-2">L2</div>
+          <div class="level-meta"><h3>Programming Fundamentals</h3><p>Unlocks after L1</p></div>
+        </div>
+      </article>
+      <article class="tree-node left node-locked fade-card">
+        <span class="node-dot level-3">3</span>
+        <div class="tree-card" data-lock="Complete Level 2 to unlock">
+          <div class="level-circle level-3">L3</div>
+          <div class="level-meta"><h3>Core Computer Science</h3><p>Unlocks after L2</p></div>
+        </div>
+      </article>
+      <article class="tree-node right node-locked fade-card">
+        <span class="node-dot level-4">4</span>
+        <div class="tree-card" data-lock="Complete Level 3 to unlock">
+          <div class="level-circle level-4">L4</div>
+          <div class="level-meta"><h3>Web Development</h3><p>Unlocks after L3</p></div>
+        </div>
+      </article>
+      <article class="tree-node left node-locked fade-card">
+        <span class="node-dot level-5">5</span>
+        <div class="tree-card" data-lock="Complete Level 4 to unlock">
+          <div class="level-circle level-5">L5</div>
+          <div class="level-meta"><h3>Backend &amp; Databases</h3><p>Unlocks after L4</p></div>
+        </div>
+      </article>
+      <article class="tree-node right node-locked fade-card">
+        <span class="node-dot level-6">6</span>
+        <div class="tree-card" data-lock="Complete Level 5 to unlock">
+          <div class="level-circle level-6">L6</div>
+          <div class="level-meta"><h3>Advanced CS &amp; Career</h3><p>Unlocks after L5</p></div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="curriculum-section" id="full-curriculum">
+    <h2 class="section-title">The Full Curriculum</h2>
+    <p class="section-sub">61 lessons across 6 levels. Every topic explained from first principles. Click any level to explore its lessons.</p>
+    <div class="curriculum-top">
+      <p class="curriculum-counter" id="curriculumCounter">📚 0 / 61 lessons completed</p>
+      <div class="curriculum-progress"><div class="curriculum-progress-fill" id="curriculumProgressFill"></div></div>
+    </div>
+    <div id="curriculumAccordion"></div>
+  </section>
+
+
+  <script>
+    const siteHeader = document.getElementById('siteHeader');
+    const menuToggle = document.getElementById('menuToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+
+    const onScroll = () => {
+      siteHeader.classList.toggle('scrolled', window.scrollY > 50);
+
+      const scrollTop = window.scrollY;
+      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+      readingProgress.style.width = `${Math.min(progress, 100)}%`;
+    };
+
+    const toggleMenu = () => {
+      const isOpen = mobileMenu.classList.toggle('open');
+      menuToggle.setAttribute('aria-expanded', String(isOpen));
+      mobileMenu.setAttribute('aria-hidden', String(!isOpen));
+      document.body.style.overflow = isOpen ? 'hidden' : '';
+    };
+
+
+    const readingProgress = document.getElementById('readingProgress');
+    const typewriterText = document.getElementById('typewriterText');
+    const enrollToast = document.getElementById('enrollToast');
+
+    const phrases = [
+      'Learn to Code.',
+      'Build Anything.',
+      'Think Like a Computer.',
+      'Go From Zero to Engineer.'
+    ];
+    let phraseIndex = 0;
+    let letterIndex = 0;
+    let deleting = false;
+
+    const runTypewriter = () => {
+      const current = phrases[phraseIndex];
+      typewriterText.textContent = current.slice(0, letterIndex);
+
+      if (!deleting && letterIndex < current.length) {
+        letterIndex += 1;
+        setTimeout(runTypewriter, 75);
+      } else if (!deleting && letterIndex === current.length) {
+        deleting = true;
+        setTimeout(runTypewriter, 1200);
+      } else if (deleting && letterIndex > 0) {
+        letterIndex -= 1;
+        setTimeout(runTypewriter, 40);
+      } else {
+        deleting = false;
+        phraseIndex = (phraseIndex + 1) % phrases.length;
+        setTimeout(runTypewriter, 220);
+      }
+    };
+
+
+
+    const curriculumData = [
+      {level:1,color:'#22C55E',title:'The Foundations',hours:'~3 hrs',lessons:[
+        ['1.1','How Computers Work: CPU, RAM, Storage & GPU Explained','14 min',true,false],['1.2','Binary & Number Systems: How Computers Count','10 min',false,false],['1.3','Operating Systems: What They Are & How to Use Them','12 min',true,false],['1.4','The Internet Explained: TCP/IP, DNS, HTTP & Browsers','16 min',false,false],['1.5','Introduction to the Terminal & Command Line','18 min',false,false],['1.6','Files, Folders & File Systems','8 min',false,false],['1.7','What is a Programming Language?','10 min',true,false],['1.8','Your First Program: "Hello, World!" in Python','PROJECT',false,true]
+      ]},
+      {level:2,color:'#EAB308',title:'Programming Fundamentals',hours:'~4 hrs',lessons:[
+        ['2.9','Variables, Data Types & Memory','14 min',true,false],['2.10','Operators & Expressions','10 min',false,false],['2.11','Conditionals: if / else / elif','12 min',false,false],['2.12','Loops: for, while, and When to Use Each','16 min',false,false],['2.13','Functions: Writing Reusable Code','18 min',true,false],['2.14','Scope, Closures & the Call Stack','14 min',false,false],['2.15','Debugging: Reading Errors & Using Print Statements','12 min',false,false],['2.16','Pseudocode & Flowcharts: Planning Before Coding','10 min',false,false],['2.17','Mini Project: Build a Text-Based Calculator','PROJECT',false,true]
+      ]},
+      {level:3,color:'#F97316',title:'Core Computer Science',hours:'~5.5 hrs',lessons:[
+        ['3.18','Arrays & Lists: When Order Matters','12 min',false,false],['3.19','Strings & String Manipulation','14 min',true,false],['3.20','Dictionaries & Hash Maps','16 min',false,false],['3.21','Stacks & Queues: The Fundamentals','14 min',false,false],['3.22','Linked Lists: Explained Visually','18 min',false,false],['3.23','Recursion: How to Think Recursively','20 min',true,false],['3.24','Searching: Linear & Binary Search','14 min',false,false],['3.25','Sorting: Bubble, Merge & Quick Sort','22 min',false,false],['3.26','Big-O Notation & Algorithm Complexity','18 min',false,false],['3.27','Object-Oriented Programming: Classes & Objects','20 min',true,false],['3.28','Mini Project: Student Grade Manager in Python','PROJECT',false,true]
+      ]},
+      {level:4,color:'#3B82F6',title:'Web Development',hours:'11.0h',lessons:[
+        ['4.1','HTML Structure','9 min',true,false],['4.2','CSS Layouts','12 min',false,false],['4.3','Responsive Design','11 min',false,false],['4.4','JavaScript DOM','15 min',false,false],['4.5','Mini Project: Landing Page','PROJECT',false,true],['4.6','React Components','16 min',false,false],['4.7','State and Props','14 min',false,false],['4.8','Routing Basics','10 min',false,false],['4.9','API Integration','13 min',false,false],['4.10','Mini Project: Dashboard App','PROJECT',false,true]
+      ]},
+      {level:5,color:'#A855F7',title:'Backend & Databases',hours:'11.5h',lessons:[
+        ['5.1','Node.js Fundamentals','12 min',false,false],['5.2','Express Routing','13 min',false,false],['5.3','REST API Design','14 min',true,false],['5.4','PostgreSQL Basics','15 min',false,false],['5.5','Mini Project: Notes API','PROJECT',false,true],['5.6','MongoDB Essentials','13 min',false,false],['5.7','Auth and Sessions','16 min',false,false],['5.8','Security Best Practices','11 min',false,false],['5.9','Deploying Services','12 min',false,false],['5.10','Mini Project: Auth Service','PROJECT',false,true]
+      ]},
+      {level:6,color:'#EF4444',title:'Advanced CS & Career',hours:'10.0h',lessons:[
+        ['6.1','System Design Basics','14 min',false,false],['6.2','Scalability Concepts','13 min',false,false],['6.3','Testing Strategies','11 min',false,false],['6.4','GitHub Workflow','10 min',true,false],['6.5','Mini Project: Architecture Case Study','PROJECT',false,true],['6.6','Interview Algorithms','15 min',false,false],['6.7','Behavioral Interviews','9 min',false,false],['6.8','Portfolio Positioning','10 min',false,false],['6.9','Resume + LinkedIn','8 min',false,false],['6.10','Final Capstone','PROJECT',false,true],['6.11','Graduation Checklist','7 min',false,false]
+      ]}
+    ];
+
+    const curriculumAccordion = document.getElementById('curriculumAccordion');
+    const curriculumCounter = document.getElementById('curriculumCounter');
+    const curriculumProgressFill = document.getElementById('curriculumProgressFill');
+    const storageKey = 'codecraft.completedLessons';
+
+    const renderCurriculum = () => {
+      curriculumAccordion.innerHTML = curriculumData.map((lvl) => {
+        const rows = lvl.lessons.map((lesson) => {
+          const [id,title,duration,free,project] = lesson;
+          return `<label class="lesson-row ${project ? 'project' : ''}"><input type="checkbox" data-lesson="${id}"><span class="lesson-title">${project ? '🛠 ' : ''}${id} — ${title}</span>${project ? '<span class="project-badge">PROJECT</span>' : `<span class="duration-badge">${duration}</span>`}${free ? '<span class="preview-pill">FREE PREVIEW</span>' : '<span></span>'}</label>`;
+        }).join('');
+        return `<article class="accordion-item"><button class="accordion-header"><div class="acc-left"><span class="lvl-badge" style="background:${lvl.color}">LEVEL ${lvl.level}</span><strong>${lvl.title}</strong></div><div class="acc-meta"><span>${lvl.lessons.length} lessons</span><span>${lvl.hours}</span><span class="acc-chevron">⌄</span></div></button><div class="accordion-body"><div class="lesson-list">${rows}</div></div></article>`;
+      }).join('');
+    };
+
+    const updateCurriculumProgress = () => {
+      const checks = [...document.querySelectorAll('#curriculumAccordion input[type="checkbox"]')];
+      const done = checks.filter((c) => c.checked).length;
+      curriculumCounter.textContent = `📚 ${done} / 61 lessons completed`;
+      curriculumProgressFill.style.width = `${(done / 61) * 100}%`;
+      localStorage.setItem(storageKey, JSON.stringify(checks.filter((c) => c.checked).map((c) => c.dataset.lesson)));
+    };
+
+    renderCurriculum();
+
+    document.querySelectorAll('.accordion-header').forEach((header) => {
+      header.addEventListener('click', () => {
+        const item = header.closest('.accordion-item');
+        const body = item.querySelector('.accordion-body');
+        const open = item.classList.toggle('open');
+        body.style.maxHeight = open ? `${body.scrollHeight}px` : '0px';
+      });
+    });
+
+    const saved = new Set(JSON.parse(localStorage.getItem(storageKey) || '[]'));
+    document.querySelectorAll('#curriculumAccordion input[type="checkbox"]').forEach((box) => {
+      box.checked = saved.has(box.dataset.lesson);
+      box.addEventListener('change', updateCurriculumProgress);
+    });
+    updateCurriculumProgress();
+
+    const fadeCards = document.querySelectorAll('.fade-card');
+    const fadeObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          fadeObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    fadeCards.forEach((card) => fadeObserver.observe(card));
+
+    onScroll();
+    runTypewriter();
+    setTimeout(() => enrollToast.classList.add('show'), 4000);
+    enrollToast.addEventListener('click', () => enrollToast.remove());
+    window.addEventListener('scroll', onScroll);
+    menuToggle.addEventListener('click', toggleMenu);
+    mobileMenu.addEventListener('click', (event) => {
+      if (event.target === mobileMenu || event.target.classList.contains('nav-link')) {
+        toggleMenu();
+      }
+    });
+  </script>
+</body>
+</html>
