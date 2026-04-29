@@ -692,6 +692,58 @@
       }
     }
 
+
+
+    .curriculum-section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 4rem 1.5rem 5rem;
+    }
+
+    .curriculum-top {
+      margin: 1.5rem 0 1.2rem;
+    }
+
+    .curriculum-counter {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.95rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .curriculum-progress {
+      height: 6px;
+      width: 100%;
+      background: rgba(100,116,139,0.25);
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .curriculum-progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--cyan), #22c55e);
+      transition: width var(--trans);
+    }
+
+    .accordion-item { border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 0.85rem; background: rgba(17,24,39,0.65); overflow: hidden; }
+    .accordion-header { width: 100%; background: transparent; color: var(--text); border: 0; padding: 0.95rem 1rem; display:flex; align-items:center; justify-content:space-between; gap:1rem; cursor:pointer; }
+    .acc-left { display:flex; align-items:center; gap:0.7rem; flex-wrap:wrap; }
+    .lvl-badge { font-family:"JetBrains Mono", monospace; font-size:0.75rem; padding:0.22rem 0.5rem; border-radius:999px; color:#fff; }
+    .acc-meta { color: var(--muted); font-size:0.84rem; display:flex; gap:0.7rem; align-items:center; }
+    .acc-chevron { transition: transform var(--trans); color: var(--cyan); }
+    .accordion-item.open .acc-chevron { transform: rotate(180deg); }
+    .accordion-body { max-height: 0; overflow: hidden; transition: max-height .35s ease; }
+    .lesson-list { padding: 0 1rem 1rem; display:grid; gap:0.55rem; }
+    .lesson-row { display:grid; grid-template-columns:auto 1fr auto auto; gap:0.6rem; align-items:center; border:1px solid rgba(100,116,139,0.25); border-radius:10px; padding:0.55rem 0.65rem; background: rgba(10,14,26,0.5); }
+    .lesson-row input { accent-color: var(--cyan); width:16px; height:16px; }
+    .lesson-title { font-size:0.92rem; }
+    .duration-badge,.project-badge,.preview-pill { font-size:0.72rem; border-radius:999px; padding:0.2rem 0.45rem; font-family:"JetBrains Mono", monospace; }
+    .duration-badge { border:1px solid var(--border); color:var(--muted); }
+    .preview-pill { background: rgba(34,197,94,0.2); border:1px solid rgba(34,197,94,0.4); color:#86efac; }
+    .lesson-row.project { background: rgba(234,179,8,0.12); border-color: rgba(234,179,8,0.45); }
+    .project-badge { background: rgba(234,179,8,0.2); border:1px solid rgba(234,179,8,0.5); color:#facc15; }
+
     ::-webkit-scrollbar {
       width: 10px;
       height: 10px;
@@ -862,6 +914,16 @@
     </div>
   </section>
 
+  <section class="curriculum-section" id="full-curriculum">
+    <h2 class="section-title">The Full Curriculum</h2>
+    <p class="section-sub">61 lessons across 6 levels. Every topic explained from first principles. Click any level to explore its lessons.</p>
+    <div class="curriculum-top">
+      <p class="curriculum-counter" id="curriculumCounter">📚 0 / 61 lessons completed</p>
+      <div class="curriculum-progress"><div class="curriculum-progress-fill" id="curriculumProgressFill"></div></div>
+    </div>
+    <div id="curriculumAccordion"></div>
+  </section>
+
 
   <script>
     const siteHeader = document.getElementById('siteHeader');
@@ -919,6 +981,69 @@
       }
     };
 
+
+
+    const curriculumData = [
+      {level:1,color:'#22C55E',title:'The Foundations',hours:'8.5h',lessons:[
+        ['1.1','How Computers Actually Work','12 min',true,false],['1.2','Binary, Bits, and Bytes','10 min',false,false],['1.3','Command Line Basics','14 min',true,false],['1.4','Mini Project: Build Your Dev Environment','PROJECT',false,true],['1.5','Internet Fundamentals','13 min',false,false],['1.6','How the Web Loads a Page','11 min',false,false],['1.7','Operating Systems Overview','9 min',false,false],['1.8','Debugging Mindset','15 min',false,false],['1.9','Mini Project: System Map','PROJECT',false,true],['1.10','Review + Quiz','8 min',false,false]
+      ]},
+      {level:2,color:'#EAB308',title:'Programming Fundamentals',hours:'10.0h',lessons:[
+        ['2.1','Variables and Data Types','11 min',true,false],['2.2','Conditionals and Logic','13 min',false,false],['2.3','Loops and Iteration','14 min',false,false],['2.4','Functions that Scale','12 min',false,false],['2.5','Mini Project: CLI Calculator','PROJECT',false,true],['2.6','Collections and Dictionaries','15 min',false,false],['2.7','Error Handling Basics','10 min',false,false],['2.8','Input/Output','9 min',false,false],['2.9','Problem Solving Patterns','14 min',false,false],['2.10','Mini Project: Text Analyzer','PROJECT',false,true]
+      ]},
+      {level:3,color:'#F97316',title:'Core Computer Science',hours:'9.0h',lessons:[
+        ['3.1','Arrays and Strings','12 min',false,false],['3.2','Hash Maps','11 min',false,false],['3.3','Stacks and Queues','13 min',false,false],['3.4','Trees and Traversals','16 min',false,false],['3.5','Mini Project: Data Structure Visualizer','PROJECT',false,true],['3.6','Sorting Algorithms','14 min',false,false],['3.7','Searching Algorithms','10 min',false,false],['3.8','Big-O Notation','12 min',true,false],['3.9','Recursion Explained','13 min',false,false],['3.10','Mini Project: Algo Challenge Set','PROJECT',false,true]
+      ]},
+      {level:4,color:'#3B82F6',title:'Web Development',hours:'11.0h',lessons:[
+        ['4.1','HTML Structure','9 min',true,false],['4.2','CSS Layouts','12 min',false,false],['4.3','Responsive Design','11 min',false,false],['4.4','JavaScript DOM','15 min',false,false],['4.5','Mini Project: Landing Page','PROJECT',false,true],['4.6','React Components','16 min',false,false],['4.7','State and Props','14 min',false,false],['4.8','Routing Basics','10 min',false,false],['4.9','API Integration','13 min',false,false],['4.10','Mini Project: Dashboard App','PROJECT',false,true]
+      ]},
+      {level:5,color:'#A855F7',title:'Backend & Databases',hours:'11.5h',lessons:[
+        ['5.1','Node.js Fundamentals','12 min',false,false],['5.2','Express Routing','13 min',false,false],['5.3','REST API Design','14 min',true,false],['5.4','PostgreSQL Basics','15 min',false,false],['5.5','Mini Project: Notes API','PROJECT',false,true],['5.6','MongoDB Essentials','13 min',false,false],['5.7','Auth and Sessions','16 min',false,false],['5.8','Security Best Practices','11 min',false,false],['5.9','Deploying Services','12 min',false,false],['5.10','Mini Project: Auth Service','PROJECT',false,true]
+      ]},
+      {level:6,color:'#EF4444',title:'Advanced CS & Career',hours:'10.0h',lessons:[
+        ['6.1','System Design Basics','14 min',false,false],['6.2','Scalability Concepts','13 min',false,false],['6.3','Testing Strategies','11 min',false,false],['6.4','GitHub Workflow','10 min',true,false],['6.5','Mini Project: Architecture Case Study','PROJECT',false,true],['6.6','Interview Algorithms','15 min',false,false],['6.7','Behavioral Interviews','9 min',false,false],['6.8','Portfolio Positioning','10 min',false,false],['6.9','Resume + LinkedIn','8 min',false,false],['6.10','Final Capstone','PROJECT',false,true],['6.11','Graduation Checklist','7 min',false,false]
+      ]}
+    ];
+
+    const curriculumAccordion = document.getElementById('curriculumAccordion');
+    const curriculumCounter = document.getElementById('curriculumCounter');
+    const curriculumProgressFill = document.getElementById('curriculumProgressFill');
+    const storageKey = 'codecraft.completedLessons';
+
+    const renderCurriculum = () => {
+      curriculumAccordion.innerHTML = curriculumData.map((lvl) => {
+        const rows = lvl.lessons.map((lesson) => {
+          const [id,title,duration,free,project] = lesson;
+          return `<label class="lesson-row ${project ? 'project' : ''}"><input type="checkbox" data-lesson="${id}"><span class="lesson-title">${project ? '🛠 ' : ''}${id} — ${title}</span>${project ? '<span class="project-badge">PROJECT</span>' : `<span class="duration-badge">${duration}</span>`}${free ? '<span class="preview-pill">FREE PREVIEW</span>' : '<span></span>'}</label>`;
+        }).join('');
+        return `<article class="accordion-item"><button class="accordion-header"><div class="acc-left"><span class="lvl-badge" style="background:${lvl.color}">LEVEL ${lvl.level}</span><strong>${lvl.title}</strong></div><div class="acc-meta"><span>${lvl.lessons.length} lessons</span><span>${lvl.hours}</span><span class="acc-chevron">⌄</span></div></button><div class="accordion-body"><div class="lesson-list">${rows}</div></div></article>`;
+      }).join('');
+    };
+
+    const updateCurriculumProgress = () => {
+      const checks = [...document.querySelectorAll('#curriculumAccordion input[type="checkbox"]')];
+      const done = checks.filter((c) => c.checked).length;
+      curriculumCounter.textContent = `📚 ${done} / 61 lessons completed`;
+      curriculumProgressFill.style.width = `${(done / 61) * 100}%`;
+      localStorage.setItem(storageKey, JSON.stringify(checks.filter((c) => c.checked).map((c) => c.dataset.lesson)));
+    };
+
+    renderCurriculum();
+
+    document.querySelectorAll('.accordion-header').forEach((header) => {
+      header.addEventListener('click', () => {
+        const item = header.closest('.accordion-item');
+        const body = item.querySelector('.accordion-body');
+        const open = item.classList.toggle('open');
+        body.style.maxHeight = open ? `${body.scrollHeight}px` : '0px';
+      });
+    });
+
+    const saved = new Set(JSON.parse(localStorage.getItem(storageKey) || '[]'));
+    document.querySelectorAll('#curriculumAccordion input[type="checkbox"]').forEach((box) => {
+      box.checked = saved.has(box.dataset.lesson);
+      box.addEventListener('change', updateCurriculumProgress);
+    });
+    updateCurriculumProgress();
 
     const fadeCards = document.querySelectorAll('.fade-card');
     const fadeObserver = new IntersectionObserver((entries) => {
